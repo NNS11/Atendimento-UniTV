@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATENDIMENTO UNITV FREE</title>
+  <style>
+    :root {
+      --bg: #1a0f2e;
+      --card: #2a1f45;
+      --text: #f0e6ff;
+      --accent: #c026d3;
+      --title: #e879f9;
+      --button: #d946ef;
+    }
+    [data-theme="light"] {
+      --bg: #f8f0ff;
+      --card: #ffffff;
+      --text: #2e1a4d;
+      --accent: #a21caf;
+      --title: #6b21a8;
+      --button: #c026d3;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.4s;
+    }
+
+    header {
+      text-align: center;
+      padding: 35px 20px 25px;
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    [data-theme="light"] header {
+      background: #f3e8ff;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      height: 72px;
+      border-radius: 14px;
+    }
+
+    h1 {
+      font-size: 2.35rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      font-size: 1.08rem;
+      opacity: 0.85;
+      margin-top: 6px;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: var(--text);
+      padding: 9px 17px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      z-index: 10; /* Para garantir que fique acima de outros elementos */
+    }
+
+    [data-theme="light"] .theme-toggle {
+      background: #e9d5ff;
+      color: #4c1d95;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin: 40px 0 45px;
+      flex-wrap: wrap;
+    }
+
+    .menu-btn {
+      padding: 14px 34px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background: rgba(255,255,255,0.12);
+      color: var(--text);
+      border: 2px solid transparent;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .menu-btn:hover,
+    .menu-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .content {
+      display: none;
+    }
+
+    .content.active {
+      display: block;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 35px;
+      color: var(--title);
+      font-weight: 500;
+    }
+
+    .message-card {
+      background: var(--card);
+      border-radius: 22px;
+      padding: 24px 26px;
+      margin-bottom: 28px;
+      border-left: 7px solid var(--accent);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .message-title {
+      font-size: 1.32rem;
+      color: var(--title);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    /* NOVO: Estilo para o bloco único de conteúdo da mensagem */
+    .message-content {
+      background: rgba(0, 0, 0, 0.35);
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      margin-bottom: 16px;
+      white-space: pre-line; /* Mantém quebras de linha do texto original */
+
+      /* Preview automático em 3 linhas */
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    [data-theme="light"] .message-content {
+      background: #f3e8ff;
+    }
+
+    /* Quando o card está expandido, remove o corte de linha */
+    .message-card.expanded .message-content {
+      -webkit-line-clamp: unset; /* Mostra o texto completo */
+      overflow: visible;         /* Garante que tudo seja visível */
+    }
+
+    .toggle-btn {
+      background: transparent;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+      padding: 9px 22px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: all 0.3s;
+    }
+
+    .toggle-btn:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .copy-btn {
+      background: var(--button);
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.03rem;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s;
+    }
+
+    .copy-btn:hover {
+      background: #e879f9;
+      transform: translateY(-2px);
+    }
+
+    .copy-btn.copied {
+      background: #a78bfa;
+    }
+
+    footer {
+      text-align: center;
+      padding: 45px 20px 30px;
+      font-size: 0.96rem;
+      opacity: 0.75;
+    }
+  </style>
+</head>
+<body> <!-- Removido data-theme="dark" daqui para evitar flicker -->
+  <button class="theme-toggle" id="themeToggle" type="button">🌙 Escuro</button>
+
+  <header>
+    <div class="header-content">
+      <img src="https://tivva.com.br/wp-content/uploads/2025/11/tv-logo-1-1.webp" alt="Logo UniTV" class="logo">
+      <div>
+        <h1>ATENDIMENTO UNITV FREE</h1>
+        <p class="subtitle">Mensagens prontas para atendimento rápido</p>
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <!-- Menu de abas com ARIA para acessibilidade -->
+    <div class="menu" role="tablist">
+      <button class="menu-btn active" data-tab="compra" role="tab" aria-selected="true" aria-controls="compra-panel" id="compra-tab" type="button">COMPRA</button>
+      <button class="menu-btn" data-tab="afiliados" role="tab" aria-selected="false" aria-controls="afiliados-panel" id="afiliados-tab" type="button">AFILIADOS</button>
+      <button class="menu-btn" data-tab="avaliacoes" role="tab" aria-selected="false" aria-controls="avaliacoes-panel" id="avaliacoes-tab" type="button">AVALIAÇÕES</button>
+    </div>
+
+    <!-- ==================== COMPRA ==================== -->
+    <div id="compra-panel" class="content active" role="tabpanel" aria-labelledby="compra-tab">
+      <h2 class="section-title">Mensagens para COMPRA</h2>
+
+      <div class="message-card">
+        <div class="message-title">SABER MAIS SOBRE</div>
+        <!-- Bloco ÚNICO de texto para a mensagem -->
+        <div class="message-content">*Olá* 👋
+
+O *UniTV Free* é um app de *entretenimento completo*, onde você tem acesso a:
+👉 *_Filmes_* 🎬
+👉 *_Séries_* 📺
+👉 _*Desenhos/Animes*_ 🍿
+👉 _*Canais ao vivo*_ (esportes, notícias, etc) ⚽🔥
+
+Tudo isso *sem mensalidade*, você *paga uma única vez e usa pra sempre.*
+
+💰🔥 _*VALORES:*_
+👉 *1* conta: _*R$ 100,00*_
+👉 *2* ou mais: _*R$ 85,00 CADA*_ (Se forem compradas de uma só vez)
+
+📲 _*COMO FUNCIONA:*_
+👉 Você recebe um *código* + *ativador*
+👉 Coloca o *código no ativador*
+👉 *Ele instala tudo automático* no seu aparelho
+
+📺 *Funciona em qualquer aparelho Android* (TV Box, celular, smart TV, etc)
+
+_*Ou seja, você paga uma só vez e não precisa ficar pagando mensalidades de Netflix, Prime vídeo ou TV a cabo todo mês!*_</div>
+        <button class="toggle-btn" type="button">Ver mensagem completa ↓</button>
+        <button class="copy-btn" type="button">Copiar Mensagem</button>
+      </div>
+
+      <div class="message-card">
+        <div class="message-title">INTERESSE OU DÚVIDA</div>
+        <!-- Bloco ÚNICO de texto para a mensagem -->
+        <div class="message-content">Tem *interesse* ou alguma *dúvida*? 🤔</div>
+        <button class="toggle-btn" type="button">Ver mensagem completa ↓</button>
+        <button class="copy-btn" type="button">Copiar Mensagem</button>
+      </div>
+    </div>
+
+    <!-- ==================== AFILIADOS ==================== -->
+    <div id="afiliados-panel" class="content" role="tabpanel" aria-labelledby="afiliados-tab" hidden>
+      <h2 class="section-title">Mensagens para AFILIADOS</h2>
+
+      <div class="message-card">
+        <div class="message-title">SE TORNAR AFILIADO</div>
+        <!-- Bloco ÚNICO de texto para a mensagem -->
+        <div class="message-content">*Olá* 👋
+
+💸 *Quer ser afiliado da UniTV Free?*
+
+_*Funciona assim:*_
+👉 Quem faz a venda sou eu
+👉 Você só precisa _*indicar pessoas interessadas em comprar a conta*_
+
+💰 _*COMISSÃO:*_
+👉 Se a pessoa comprar comigo vindo de você → _*você ganha R$ 20,00 por cliente*_
+
+📌 _*IMPORTANTE:*_
+Pra eu saber que foi você que indicou, a pessoa precisa me falar:
+👉 *seu nome OU seu número de WhatsApp* na hora da compra
+
+⚠️ Agora faz isso:
+👉 _*Me manda seu nome pra eu te cadastrar como afiliado*_
+
+Simples: você indica, eu vendo, você lucra. 💸</div>
+        <button class="toggle-btn" type="button">Ver mensagem completa ↓</button>
+        <button class="copy-btn" type="button">Copiar Mensagem</button>
+      </div>
+
+      <div class="message-card">
+        <div class="message-title">AGRADECIMENTO POR AFILIAÇÃO</div>
+        <!-- Bloco ÚNICO de texto para a mensagem -->
+        <div class="message-content">✅ *Obrigado por se tornar um afiliado da UniTV Free!*
+
+*Agora é simples:*
+👉 Você *indica pessoas interessadas*
+👉 Eu faço a venda
+👉 E *você ganha R$ 20,00* por cada cliente que comprar comigo 💰
+
+📌 *Lembre sempre disso:*
+Peça pra pessoa falar seu nome ou seu número na hora da compra, pra garantir sua comissão.
+
+🚀 *Bora faturar! Quanto mais indicar, mais você ganha.* 💸</div>
+        <button class="toggle-btn" type="button">Ver mensagem completa ↓</button>
+        <button class="copy-btn" type="button">Copiar Mensagem</button>
+      </div>
+
+
+      <div class="message-card">
+        <div class="message-title">COMISSÃO ENVIADA</div>
+        <!-- Bloco ÚNICO de texto para a mensagem -->
+        <div class="message-content">💸 *_Sua comissão já foi enviada!_*
+
+✅ *Obrigado pela indicação*, a venda foi *concluída com sucesso*.
+
+👉 *Você recebeu R$ 20,00* por esse cliente que comprou comigo.
+
+🚀 *Continue indicando*, porque quanto mais você traz clientes, *mais você ganha*.
+
+🤝 _*Valeu pela parceria!*_</div>
+        <button class="toggle-btn" type="button">Ver mensagem completa ↓</button>
+        <button class="copy-btn" type="button">Copiar Mensagem</button>
+      </div>
+    </div>
+
+    <!-- ==================== AVALIAÇÕES ==================== -->
+    <div id="avaliacoes-panel" class="content" role="tabpanel" aria-labelledby="avaliacoes-tab" hidden>
+      <h2 class="section-title">Mensagens para AVALIAÇÕES</h2>
+
+      <div class="message-card">
+        <div class="message-title">PEDIDO DE AVALIAÇÃO</div>
+        <!-- Bloco ÚNICO de texto para a mensagem -->
+        <div class="message-content">Se puder deixar *uma avaliação lá no grupo* do Telegram, *ia me ajudar bastante* 🙏
+
+👉 https://t.me/+f7IrF5pHrIs0NTgx
+
+Mas se não quiser, tranquilo 👍 *é só pra me ajudar mesmo*.</div>
+        <button class="toggle-btn" type="button">Ver mensagem completa ↓</button>
+        <button class="copy-btn" type="button">Copiar Mensagem</button>
+      </div>
+
+      <div class="message-card">
+        <div class="message-title">AGRADECIMENTO POR AVALIAÇÃO</div>
+        <!-- Bloco ÚNICO de texto para a MENSAGEM -->
+        <div class="message-content">*Valeu mesmo pela avaliação* 🙏
+
+Isso me ajuda bastante e *fortalece muito o projeto!* 🚀
+
+*Se quiser comprar outras contas futuramente, é só me chamar* 👍</div>
+        <button class="toggle-btn" type="button">Ver mensagem completa ↓</button>
+        <button class="copy-btn" type="button">Copiar Mensagem</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Funções Auxiliares para copiar texto e feedback ---
+    function showCopyFeedback(btn) {
+      const original = btn.textContent;
+      btn.textContent = "✅ Copiado!";
+      btn.classList.add('copied');
+
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 1500); // Feedback por 1.5 segundos
+    }
+
+    function fallbackCopyTextToClipboard(text, btn) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+
+      // Estiliza a textarea para que ela não seja visível e não atrapalhe o layout
+      textArea.style.position = "fixed";
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.width = "2em";
+      textArea.style.height = "2em";
+      textArea.style.padding = "0";
+      textArea.style.border = "none";
+      textArea.style.outline = "none";
+      textArea.style.boxShadow = "none";
+      textArea.style.background = "transparent";
+      textArea.style.opacity = "0";
+
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showCopyFeedback(btn);
+        } else {
+          alert('Erro ao copiar a mensagem. Por favor, copie manualmente.');
+          console.error('Fallback: Comando de cópia não foi bem-sucedido.');
+        }
+      } catch (err) {
+        alert('Erro ao copiar a mensagem. Por favor, copie manualmente.');
+        console.error('Fallback: Não foi possível copiar', err);
+      }
+
+      document.body.removeChild(textArea);
+    }
+
+    // --- Lógica Principal ---
+
+    // Tema claro/escuro
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    // Chame loadTheme() imediatamente para evitar o "flicker" (piscar)
+    loadTheme();
+
+    function loadTheme() {
+      const saved = localStorage.getItem('theme') || 'dark'; // Padrão é dark
+      body.setAttribute('data-theme', saved);
+      updateToggle(saved);
+    }
+
+    function updateToggle(theme) {
+      themeToggle.textContent = theme === 'light' ? '🌙 Escuro' : '☀️ Claro';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      let current = body.getAttribute('data-theme');
+      let newTheme = current === 'light' ? 'dark' : 'light';
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateToggle(newTheme);
+    });
+
+    // Alternar abas do menu
+    document.querySelectorAll('.menu-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Desativa todos os botões e painéis
+        document.querySelectorAll('.menu-btn').forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+          const targetPanelId = b.getAttribute('aria-controls'); // Pega o ID do painel de aria-controls
+          const panel = document.getElementById(targetPanelId);
+          if (panel) {
+            panel.classList.remove('active');
+            panel.setAttribute('hidden', 'true'); // Oculta painéis inativos para leitores de tela
+          }
+        });
+
+        // Ativa o botão e painel clicados
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        const contentId = btn.getAttribute('aria-controls'); // Pega o ID do painel de aria-controls
+        const currentContent = document.getElementById(contentId);
+        if (currentContent) {
+          currentContent.classList.add('active');
+          currentContent.removeAttribute('hidden'); // Mostra o painel ativo
+        }
+      });
+    });
+
+    // Expandir / Minimizar mensagens
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const messageCard = btn.closest('.message-card'); // Encontra o pai message-card
+        messageCard.classList.toggle('expanded'); // Alterna a classe 'expanded'
+
+        if (messageCard.classList.contains('expanded')) {
+          btn.textContent = 'Minimizar ↑';
+        } else {
+          btn.textContent = 'Ver mensagem completa ↓';
+        }
+      });
+    });
+
+    // Copiar mensagem completa
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const messageCard = btn.closest('.message-card'); // Encontra o pai message-card
+        const textElement = messageCard.querySelector('.message-content'); // Pega o conteúdo da mensagem dentro deste card
+        const textToCopy = textElement.innerText.trim();
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            showCopyFeedback(btn);
+          }).catch(err => {
+            console.error('Falha ao copiar texto usando a API clipboard: ', err);
+            fallbackCopyTextToClipboard(textToCopy, btn);
+          });
+        } else {
+          fallbackCopyTextToClipboard(textToCopy, btn);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
